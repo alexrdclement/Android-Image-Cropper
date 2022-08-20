@@ -45,6 +45,15 @@
 
         <Button
             style="@style/Sample.Button"
+            android:id="@+id/sampleCropImageViewCompose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/keyline_x4"
+            android:text="@string/sample_using_cropimageview_compose"/>
+
+        <Button
+            style="@style/Sample.Button"
             android:id="@+id/sampleCustomActivity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

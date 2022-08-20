@@ -73,6 +73,7 @@
     <string name="flip_vertical">Flip Vertical</string>
     <string name="reset">Reset Crop Rect</string>
     <string name="sample_using_cropimageview">Sample using CropImageView</string>
+    <string name="sample_using_cropimageview_compose">Sample using CropImageView (Compose)</string>
     <string name="sample_of_customactivity">Sample of CustomActivity</string>
     <string name="sample_calling_cropimage">Sample calling CropImage</string>
     <string name="sample_calling_cropimage_java">Sample calling CropImage Java</string>
