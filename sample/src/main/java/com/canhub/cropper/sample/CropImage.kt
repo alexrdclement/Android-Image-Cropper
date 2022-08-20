@@ -21,6 +21,11 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/**
+ * A basic composable wrapper for CropImageView.
+ *
+ * Inspired by Accompanist's WebView (https://github.com/google/accompanist/blob/main/web/src/main/java/com/google/accompanist/web/WebView.kt)
+ */
 @Composable
 internal fun CropImage(
     uri: Uri?,
@@ -55,11 +60,20 @@ internal fun CropImage(
     )
 }
 
+/**
+ * Creates and remembers a [CropImageViewInteractor] using the default [CoroutineScope] or a provided
+ * override.
+ */
 @Composable
 fun rememberCropImageViewInteractor(
     coroutineScope: CoroutineScope = rememberCoroutineScope()
 ): CropImageViewInteractor = remember(coroutineScope) { CropImageViewInteractor(coroutineScope) }
 
+/**
+ * Allows for interactions with CropImageView from outside the composable.
+ *
+ * @see [rememberCropImageViewInteractor]
+ */
 @Stable
 class CropImageViewInteractor(private val coroutineScope: CoroutineScope) {
 
