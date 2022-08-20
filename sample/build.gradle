@@ -24,6 +24,10 @@ android {
     }
     buildFeatures {
         viewBinding true
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion "$kotlinCompilerExtension"
     }
 }
 
@@ -31,5 +35,8 @@ dependencies {
     api project(':cropper')
     implementation "androidx.appcompat:appcompat:$androidXAppCompatVersion"
     implementation "androidx.core:core-ktx:$androidXCoreKtxVersion"
+    implementation "androidx.activity:activity-compose:$androidXActivityCompose"
+    implementation "androidx.compose.ui:ui:$androidXComposeUi"
+    implementation "androidx.compose.material:material:$androidXMaterial"
     implementation "com.google.android.material:material:$materialVersion"
 }

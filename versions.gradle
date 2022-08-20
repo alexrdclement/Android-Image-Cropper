@@ -14,6 +14,7 @@ ext {
     // JetBrains
     kotlinVersion = '1.7.10'
     coroutinesVersion = '1.6.3'
+    kotlinCompilerExtension = '1.3.0'
 
     // Android
     materialVersion = '1.6.1'
@@ -26,6 +27,9 @@ ext {
     androidXJunitVersion = '1.1.3'
     androidXTestVersion = '1.4.0'
     androidXFragmentTestingVersion = '1.4.1'
+    androidXActivityCompose = '1.5.1'
+    androidXComposeUi = "1.2.1"
+    androidXMaterial = "1.2.1"
 
     // JUnit
     junitVersion = '4.13.2'
