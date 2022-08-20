@@ -2,7 +2,7 @@ ext {
 
     // Project
     libVersion = "4.3.1"
-    compileSdkVersion = 31
+    compileSdkVersion = 32
     targetSdkVersion = 31
     minSdkVersion = 16
 
@@ -12,7 +12,7 @@ ext {
     mavenGradleVersion = '2.1'
 
     // JetBrains
-    kotlinVersion = '1.7.0'
+    kotlinVersion = '1.7.10'
     coroutinesVersion = '1.6.3'
 
     // Android
