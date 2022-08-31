@@ -33,6 +33,7 @@ android {
 
 dependencies {
     api project(':cropper')
+    api project(':cropper-compose')
     implementation "androidx.appcompat:appcompat:$androidXAppCompatVersion"
     implementation "androidx.core:core-ktx:$androidXCoreKtxVersion"
     implementation "androidx.activity:activity-compose:$androidXActivityCompose"
