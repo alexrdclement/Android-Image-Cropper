@@ -1,4 +1,4 @@
-package com.canhub.cropper.sample
+package com.canhub.cropper.compose
 
 import android.graphics.Bitmap
 import android.net.Uri
@@ -13,13 +13,28 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import com.canhub.cropper.CropImageView
-import com.canhub.cropper.sample.options_dialog.SampleOptionsEntity
-import com.example.croppersample.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+
+data class CropViewOptions(
+    val scaleType: CropImageView.ScaleType,
+    val cropShape: CropImageView.CropShape,
+    val cornerShape: CropImageView.CropCornerShape,
+    val guidelines: CropImageView.Guidelines,
+    val ratio: Pair<Int, Int>?,
+    val maxZoomLvl: Int,
+    val autoZoom: Boolean,
+    val multiTouch: Boolean,
+    val centerMove: Boolean,
+    val showCropOverlay: Boolean,
+    val showProgressBar: Boolean,
+    val flipHorizontally: Boolean,
+    val flipVertically: Boolean,
+    val showCropLabel: Boolean
+)
 
 /**
  * A basic composable wrapper for CropImageView.
@@ -27,9 +42,9 @@ import kotlinx.coroutines.withContext
  * Inspired by Accompanist's WebView (https://github.com/google/accompanist/blob/main/web/src/main/java/com/google/accompanist/web/WebView.kt)
  */
 @Composable
-internal fun CropImage(
+fun CropImage(
     uri: Uri?,
-    options: SampleOptionsEntity,
+    options: CropViewOptions,
     modifier: Modifier = Modifier,
     interactor: CropImageViewInteractor = rememberCropImageViewInteractor(),
     onCropImageComplete: (CropImageView.CropResult) -> Unit = {}
@@ -52,8 +67,6 @@ internal fun CropImage(
             view.setOptions(options)
             if (uri != null) {
                 view.setImageUriAsync(uri)
-            } else {
-                view.imageResource = R.drawable.cat
             }
         },
         modifier = modifier
@@ -125,7 +138,7 @@ class CropImageViewInteractor(private val coroutineScope: CoroutineScope) {
     }
 }
 
-private fun CropImageView.setOptions(options: SampleOptionsEntity) {
+private fun CropImageView.setOptions(options: CropViewOptions) {
     cornerShape = options.cornerShape
     scaleType = options.scaleType
     cropShape = options.cropShape

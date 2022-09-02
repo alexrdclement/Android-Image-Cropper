@@ -30,7 +30,9 @@ import androidx.compose.ui.platform.ViewCompositionStrategy.DisposeOnViewTreeLif
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import com.canhub.cropper.CropImageView
-import com.canhub.cropper.sample.options_dialog.SampleOptionsEntity
+import com.canhub.cropper.compose.CropImage
+import com.canhub.cropper.compose.CropViewOptions
+import com.canhub.cropper.compose.rememberCropImageViewInteractor
 
 class SampleUsingImageViewCompose : Fragment() {
 
@@ -54,7 +56,7 @@ class SampleUsingImageViewCompose : Fragment() {
     }
 }
 
-private val DefaultOptions = SampleOptionsEntity(
+private val DefaultOptions = CropViewOptions(
     scaleType = CropImageView.ScaleType.FIT_CENTER,
     cropShape = CropImageView.CropShape.RECTANGLE,
     cornerShape = CropImageView.CropCornerShape.RECTANGLE,
