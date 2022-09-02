@@ -32,7 +32,7 @@ import androidx.fragment.app.Fragment
 import com.canhub.cropper.CropImageView
 import com.canhub.cropper.compose.CropImage
 import com.canhub.cropper.compose.CropViewOptions
-import com.canhub.cropper.compose.rememberCropImageViewInteractor
+import com.canhub.cropper.compose.rememberCropImageViewController
 
 class SampleUsingImageViewCompose : Fragment() {
 
@@ -87,12 +87,12 @@ fun SampleUsingImageViewContent() {
             ) { uri ->
                 cropImageUri = uri
             }
-            val interactor = rememberCropImageViewInteractor()
+            val controller = rememberCropImageViewController()
             CropImage(
                 uri = cropImageUri,
                 options = DefaultOptions,
                 modifier = Modifier.fillMaxWidth(),
-                interactor = interactor,
+                controller = controller,
                 onCropImageComplete = {
                     cropImageUri = it.uriContent
                 }
@@ -109,7 +109,7 @@ fun SampleUsingImageViewContent() {
                 )
                 CropButton(
                     onClick = {
-                        interactor.croppedImageAsync()
+                        controller.croppedImageAsync()
                     }
                 )
             }

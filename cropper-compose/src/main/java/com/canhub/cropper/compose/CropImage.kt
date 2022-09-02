@@ -46,13 +46,13 @@ fun CropImage(
     uri: Uri?,
     options: CropViewOptions,
     modifier: Modifier = Modifier,
-    interactor: CropImageViewInteractor = rememberCropImageViewInteractor(),
+    controller: CropImageViewController = rememberCropImageViewController(),
     onCropImageComplete: (CropImageView.CropResult) -> Unit = {}
 ) {
     var cropView by remember { mutableStateOf<CropImageView?>(null) }
 
-    LaunchedEffect(cropView, interactor) {
-        with(interactor) { cropView?.handleInteractions() }
+    LaunchedEffect(cropView, controller) {
+        with(controller) { cropView?.handleEvents() }
     }
 
     AndroidView(
@@ -74,23 +74,23 @@ fun CropImage(
 }
 
 /**
- * Creates and remembers a [CropImageViewInteractor] using the default [CoroutineScope] or a provided
+ * Creates and remembers a [CropImageViewController] using the default [CoroutineScope] or a provided
  * override.
  */
 @Composable
-fun rememberCropImageViewInteractor(
+fun rememberCropImageViewController(
     coroutineScope: CoroutineScope = rememberCoroutineScope()
-): CropImageViewInteractor = remember(coroutineScope) { CropImageViewInteractor(coroutineScope) }
+): CropImageViewController = remember(coroutineScope) { CropImageViewController(coroutineScope) }
 
 /**
  * Allows for interactions with CropImageView from outside the composable.
  *
- * @see [rememberCropImageViewInteractor]
+ * @see [rememberCropImageViewController]
  */
 @Stable
-class CropImageViewInteractor(private val coroutineScope: CoroutineScope) {
+class CropImageViewController(private val coroutineScope: CoroutineScope) {
 
-    private sealed class Interaction {
+    private sealed class Event {
         data class CroppedImageAsync(
             val saveCompressFormat: Bitmap.CompressFormat = Bitmap.CompressFormat.JPEG,
             val saveCompressQuality: Int = 90,
@@ -98,21 +98,21 @@ class CropImageViewInteractor(private val coroutineScope: CoroutineScope) {
             val reqHeight: Int = 0,
             val options: CropImageView.RequestSizeOptions = CropImageView.RequestSizeOptions.RESIZE_INSIDE,
             val customOutputUri: Uri? = null,
-        ) : Interaction()
+        ) : Event()
     }
 
-    private val interactions: MutableSharedFlow<Interaction> = MutableSharedFlow()
+    private val events: MutableSharedFlow<Event> = MutableSharedFlow()
 
-    internal suspend fun CropImageView.handleInteractions(): Unit = withContext(Dispatchers.Main) {
-        interactions.collect { interaction ->
-            when (interaction) {
-                is Interaction.CroppedImageAsync -> croppedImageAsync(
-                    saveCompressFormat = interaction.saveCompressFormat,
-                    saveCompressQuality = interaction.saveCompressQuality,
-                    reqWidth = interaction.reqWidth,
-                    reqHeight = interaction.reqHeight,
-                    options = interaction.options,
-                    customOutputUri = interaction.customOutputUri
+    internal suspend fun CropImageView.handleEvents(): Unit = withContext(Dispatchers.Main) {
+        events.collect { event ->
+            when (event) {
+                is Event.CroppedImageAsync -> croppedImageAsync(
+                    saveCompressFormat = event.saveCompressFormat,
+                    saveCompressQuality = event.saveCompressQuality,
+                    reqWidth = event.reqWidth,
+                    reqHeight = event.reqHeight,
+                    options = event.options,
+                    customOutputUri = event.customOutputUri
                 )
             }
         }
@@ -126,7 +126,7 @@ class CropImageViewInteractor(private val coroutineScope: CoroutineScope) {
         options: CropImageView.RequestSizeOptions = CropImageView.RequestSizeOptions.RESIZE_INSIDE,
         customOutputUri: Uri? = null,
     ) {
-        val interaction = Interaction.CroppedImageAsync(
+        val event = Event.CroppedImageAsync(
             saveCompressFormat = saveCompressFormat,
             saveCompressQuality = saveCompressQuality,
             reqWidth = reqWidth,
@@ -134,7 +134,7 @@ class CropImageViewInteractor(private val coroutineScope: CoroutineScope) {
             options = options,
             customOutputUri = customOutputUri
         )
-        coroutineScope.launch { interactions.emit(interaction) }
+        coroutineScope.launch { events.emit(event) }
     }
 }
 
