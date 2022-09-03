@@ -29,6 +29,7 @@ import com.canhub.cropper.compose.CropImageContent
 import com.canhub.cropper.compose.rememberCropImageState
 import com.canhub.cropper.compose.rememberCropImageController
 import com.example.croppersample.R
+import com.google.android.material.composethemeadapter.MdcTheme
 
 class SampleUsingImageViewCompose : Fragment() {
 
@@ -44,7 +45,7 @@ class SampleUsingImageViewCompose : Fragment() {
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                MaterialTheme {
+                MdcTheme {
                     SampleUsingImageViewContent()
                 }
             }
