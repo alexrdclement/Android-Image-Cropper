@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -76,9 +77,7 @@ private val DefaultOptions = CropViewOptions(
 @Composable
 fun SampleUsingImageViewContent() {
     Surface {
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
+        Box(
             modifier = Modifier.fillMaxSize()
         ) {
             var cropImageUri: Uri? by remember { mutableStateOf(null) }
@@ -91,7 +90,7 @@ fun SampleUsingImageViewContent() {
             CropImage(
                 uri = cropImageUri,
                 options = DefaultOptions,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxSize(),
                 controller = controller,
                 onCropImageComplete = {
                     cropImageUri = it.uriContent
@@ -100,7 +99,7 @@ fun SampleUsingImageViewContent() {
             Spacer(modifier = Modifier.height(8.dp))
             Row(
                 horizontalArrangement = Arrangement.SpaceEvenly,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter)
             ) {
                 SelectImageButton(
                     onClick = {
