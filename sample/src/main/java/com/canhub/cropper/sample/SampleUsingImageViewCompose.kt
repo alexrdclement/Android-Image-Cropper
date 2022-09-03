@@ -27,7 +27,7 @@ import androidx.fragment.app.Fragment
 import com.canhub.cropper.compose.CropImage
 import com.canhub.cropper.compose.CropImageContent
 import com.canhub.cropper.compose.rememberCropImageState
-import com.canhub.cropper.compose.rememberCropImageViewController
+import com.canhub.cropper.compose.rememberCropImageController
 import com.example.croppersample.R
 
 class SampleUsingImageViewCompose : Fragment() {
@@ -64,7 +64,7 @@ fun SampleUsingImageViewContent() {
             ) { uri ->
                 state.content = uri?.let { CropImageContent.Uri(uri) }
             }
-            val controller = rememberCropImageViewController()
+            val controller = rememberCropImageController()
             CropImage(
                 state = state,
                 modifier = Modifier.fillMaxSize(),
