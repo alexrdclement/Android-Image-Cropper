@@ -2,6 +2,7 @@ package com.canhub.cropper.compose
 
 import android.graphics.Bitmap
 import android.net.Uri
+import androidx.annotation.DrawableRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
@@ -19,22 +20,43 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-data class CropViewOptions(
-    val scaleType: CropImageView.ScaleType,
-    val cropShape: CropImageView.CropShape,
-    val cornerShape: CropImageView.CropCornerShape,
-    val guidelines: CropImageView.Guidelines,
-    val ratio: Pair<Int, Int>?,
-    val maxZoomLvl: Int,
-    val autoZoom: Boolean,
-    val multiTouch: Boolean,
-    val centerMove: Boolean,
-    val showCropOverlay: Boolean,
-    val showProgressBar: Boolean,
-    val flipHorizontally: Boolean,
-    val flipVertically: Boolean,
-    val showCropLabel: Boolean
-)
+sealed class CropImageContent {
+    data class Uri(val uri: android.net.Uri) : CropImageContent()
+    data class Drawable(@DrawableRes val drawablesRes: Int) : CropImageContent()
+}
+
+@Stable
+class CropImageState {
+    var content: CropImageContent? by mutableStateOf(null)
+    var scaleType: CropImageView.ScaleType by mutableStateOf(CropImageView.ScaleType.FIT_CENTER)
+    var cropShape: CropImageView.CropShape by mutableStateOf(CropImageView.CropShape.RECTANGLE)
+    var cornerShape: CropImageView.CropCornerShape by mutableStateOf(CropImageView.CropCornerShape.RECTANGLE)
+    var guidelines: CropImageView.Guidelines by mutableStateOf(CropImageView.Guidelines.ON)
+    var ratio: Pair<Int, Int>? by mutableStateOf(1 to 1)
+    var maxZoomLvl: Int by mutableStateOf(2)
+    var autoZoom: Boolean by mutableStateOf(true)
+    var multiTouch: Boolean by mutableStateOf(true)
+    var centerMove: Boolean by mutableStateOf(true)
+    var showCropOverlay: Boolean by mutableStateOf(true)
+    var showProgressBar: Boolean by mutableStateOf(true)
+    var flipHorizontally: Boolean by mutableStateOf(false)
+    var flipVertically: Boolean by mutableStateOf(false)
+    var showCropLabel: Boolean by mutableStateOf(false)
+}
+
+@Composable
+fun rememberCropImageState(uri: Uri): CropImageState = remember(uri) {
+    CropImageState().apply {
+        content = CropImageContent.Uri(uri)
+    }
+}
+
+@Composable
+fun rememberCropImageState(@DrawableRes drawableRes: Int): CropImageState = remember(drawableRes) {
+    CropImageState().apply {
+        content = CropImageContent.Drawable(drawableRes)
+    }
+}
 
 /**
  * A basic composable wrapper for CropImageView.
@@ -43,8 +65,7 @@ data class CropViewOptions(
  */
 @Composable
 fun CropImage(
-    uri: Uri?,
-    options: CropViewOptions,
+    state: CropImageState,
     modifier: Modifier = Modifier,
     controller: CropImageViewController = rememberCropImageViewController(),
     onCropImageComplete: (CropImageView.CropResult) -> Unit = {}
@@ -64,10 +85,7 @@ fun CropImage(
             }
         },
         update = { view ->
-            view.setOptions(options)
-            if (uri != null) {
-                view.setImageUriAsync(uri)
-            }
+            view.updateState(state)
         },
         modifier = modifier
     )
@@ -138,24 +156,39 @@ class CropImageViewController(private val coroutineScope: CoroutineScope) {
     }
 }
 
-private fun CropImageView.setOptions(options: CropViewOptions) {
-    cornerShape = options.cornerShape
-    scaleType = options.scaleType
-    cropShape = options.cropShape
-    guidelines = options.guidelines
-    if (options.ratio == null) {
+private fun CropImageView.updateState(state: CropImageState) {
+    when (val content = state.content) {
+        is CropImageContent.Drawable -> {
+            imageResource = content.drawablesRes
+        }
+        is CropImageContent.Uri -> {
+            imageResource = 0
+            setImageUriAsync(content.uri)
+        }
+        null -> {
+            setImageUriAsync(null)
+            imageResource = 0
+        }
+    }
+
+    cornerShape = state.cornerShape
+    scaleType = state.scaleType
+    cropShape = state.cropShape
+    guidelines = state.guidelines
+    val ratio = state.ratio
+    if (ratio == null) {
         setFixedAspectRatio(false)
     } else {
         setFixedAspectRatio(true)
-        setAspectRatio(options.ratio.first, options.ratio.second)
+        setAspectRatio(ratio.first, ratio.second)
     }
-    setMultiTouchEnabled(options.multiTouch)
-    setCenterMoveEnabled(options.centerMove)
-    isShowCropOverlay = options.showCropOverlay
-    isShowProgressBar = options.showProgressBar
-    isAutoZoomEnabled = options.autoZoom
-    maxZoom = options.maxZoomLvl
-    isFlippedHorizontally = options.flipHorizontally
-    isFlippedVertically = options.flipVertically
-    isShowCropLabel = options.showCropLabel
+    setMultiTouchEnabled(state.multiTouch)
+    setCenterMoveEnabled(state.centerMove)
+    isShowCropOverlay = state.showCropOverlay
+    isShowProgressBar = state.showProgressBar
+    isAutoZoomEnabled = state.autoZoom
+    maxZoom = state.maxZoomLvl
+    isFlippedHorizontally = state.flipHorizontally
+    isFlippedVertically = state.flipVertically
+    isShowCropLabel = state.showCropLabel
 }

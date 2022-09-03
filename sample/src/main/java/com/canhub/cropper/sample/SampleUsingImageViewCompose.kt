@@ -1,6 +1,5 @@
 package com.canhub.cropper.sample
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,20 +18,17 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
-import com.canhub.cropper.CropImageView
 import com.canhub.cropper.compose.CropImage
-import com.canhub.cropper.compose.CropViewOptions
+import com.canhub.cropper.compose.CropImageContent
+import com.canhub.cropper.compose.rememberCropImageState
 import com.canhub.cropper.compose.rememberCropImageViewController
+import com.example.croppersample.R
 
 class SampleUsingImageViewCompose : Fragment() {
 
@@ -56,43 +52,25 @@ class SampleUsingImageViewCompose : Fragment() {
     }
 }
 
-private val DefaultOptions = CropViewOptions(
-    scaleType = CropImageView.ScaleType.FIT_CENTER,
-    cropShape = CropImageView.CropShape.RECTANGLE,
-    cornerShape = CropImageView.CropCornerShape.RECTANGLE,
-    guidelines = CropImageView.Guidelines.ON,
-    ratio = Pair(1, 1),
-    autoZoom = true,
-    maxZoomLvl = 2,
-    multiTouch = true,
-    centerMove = true,
-    showCropOverlay = true,
-    showProgressBar = true,
-    flipHorizontally = false,
-    flipVertically = false,
-    showCropLabel = false
-)
-
 @Composable
 fun SampleUsingImageViewContent() {
     Surface {
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
-            var cropImageUri: Uri? by rememberSaveable { mutableStateOf(null) }
+            val state = rememberCropImageState(drawableRes = R.drawable.cat)
             val openPicker = rememberLauncherForActivityResult(
                 ActivityResultContracts.GetContent()
             ) { uri ->
-                cropImageUri = uri
+                state.content = uri?.let { CropImageContent.Uri(uri) }
             }
             val controller = rememberCropImageViewController()
             CropImage(
-                uri = cropImageUri,
-                options = DefaultOptions,
+                state = state,
                 modifier = Modifier.fillMaxSize(),
                 controller = controller,
-                onCropImageComplete = {
-                    cropImageUri = it.uriContent
+                onCropImageComplete = { result ->
+                    state.content = result.uriContent?.let { CropImageContent.Uri(it) }
                 }
             )
             Spacer(modifier = Modifier.height(8.dp))
