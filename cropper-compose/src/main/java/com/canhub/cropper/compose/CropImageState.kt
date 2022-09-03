@@ -18,7 +18,7 @@ class CropImageState {
     var cornerShape: CropImageView.CropCornerShape by mutableStateOf(CropImageView.CropCornerShape.RECTANGLE)
     var guidelines: CropImageView.Guidelines by mutableStateOf(CropImageView.Guidelines.ON)
     var ratio: Pair<Int, Int>? by mutableStateOf(1 to 1)
-    var maxZoomLvl: Int by mutableStateOf(2)
+    var maxZoomLevel: Int by mutableStateOf(2)
     var autoZoom: Boolean by mutableStateOf(true)
     var multiTouch: Boolean by mutableStateOf(true)
     var centerMove: Boolean by mutableStateOf(true)

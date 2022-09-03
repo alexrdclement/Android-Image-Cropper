@@ -74,7 +74,7 @@ private fun CropImageView.updateState(state: CropImageState) {
     isShowCropOverlay = state.showCropOverlay
     isShowProgressBar = state.showProgressBar
     isAutoZoomEnabled = state.autoZoom
-    maxZoom = state.maxZoomLvl
+    maxZoom = state.maxZoomLevel
     isFlippedHorizontally = state.flipHorizontally
     isFlippedVertically = state.flipVertically
     isShowCropLabel = state.showCropLabel
